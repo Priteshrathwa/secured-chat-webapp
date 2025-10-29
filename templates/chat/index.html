@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Cypherlink - Private End-to-End Encrypted Messaging{% endblock %}
+
+{% block content %}
+<section class="hero-modern">
+    <div class="hero-content">
+        <h1 class="hero-title">Private messaging.<br>Simple & Secure.</h1>
+        <p class="hero-subtitle">End-to-end encrypted conversations. No tracking. No data collection. Just you and your messages.</p>
+        
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'chat_home' %}" class="btn-hero-primary">
+                    <i class="bi bi-chat-dots"></i>
+                    Open Chat
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn-hero-primary">
+                    <i class="bi bi-arrow-right"></i>
+                    Get Started
+                </a>
+                <a href="{% url 'login' %}" class="btn-hero-secondary">
+                    Sign In
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="static\images\encryption.png" alt="encryption" class="styled-image">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h3>End-to-End Encrypted</h3>
+                <p>Military-grade encryption ensures only you and your recipient can read messages.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="static\images\zero knowledge.jpg" alt="zero knwledge" class="styled-image">
+                    <i class="bi bi-eye-slash"></i>
+                </div>
+                <h3>Zero Knowledge</h3>
+                <p>We can't read your messages. Even if we wanted to.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="static\images\messages.png" alt="message" class="styled-image">
+                    <i class="bi bi-lightning"></i>
+                </div>
+                <h3>Real-Time Messages</h3>
+                <p>Instant delivery with WebSocket technology. No delays.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="feature-card p-4">
+                <h2>🔐 Private</h2>
+                <p>Your messages are encrypted before leaving your device. Not even we can read them.</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="feature-card p-4">
+                <h2>⚡ Fast</h2>
+                <p>Real-time messaging with WebSockets ensures instant delivery of your messages.</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="feature-card p-4">
+                <h2>🛡️ Secure</h2>
+                <p>Built with security best practices: HTTPS, secure headers, and input validation.</p>
+            </div>
+        </div>
+    </div>
+</div>
+

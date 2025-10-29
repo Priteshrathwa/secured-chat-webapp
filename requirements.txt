@@ -1,0 +1,39 @@
+# Secure Real-Time Chat Application
+# Python Dependencies
+
+Django>=4.2,<5.0
+channels>=4.0.0
+daphne>=4.0.0
+channels-redis>=4.1.0
+
+# Database
+mysqlclient>=2.2.0
+
+# Encryption
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+
+# Password Hashing
+bcrypt>=4.1.0
+
+# Security
+django-cors-headers>=4.3.0
+django-ratelimit>=4.1.0
+
+# WebSocket Support
+asgiref>=3.7.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# For production
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
+# Development
+pytest>=7.4.0
+pytest-django>=4.5.0
+
+python-axolotl-curve25519
+
+python-dotenv

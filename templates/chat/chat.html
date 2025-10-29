@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat - Secure Chat{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <!-- Chat Sidebar -->
+    <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+            <h5 class="chat-sidebar-title">Messages</h5>
+            <div class="chat-search">
+                <i class="bi bi-search chat-search-icon"></i>
+                <input type="text" placeholder="  Search conversations..." />
+            </div>
+        </div>
+        <div class="chat-contacts" id="usersList">
+            {% for user in users %}
+            <a href="#" class="contact-item user-item" data-username="{{ user.username }}" data-public-key="{{ user.profile.public_key }}">
+                <div class="contact-avatar">
+                    {{ user.username|slice:":1"|upper }}
+                    <div class="online-indicator online-status"></div>
+                </div>
+                <div class="contact-info">
+                    <h6 class="contact-name">{{ user.username }}</h6>
+                    <small class="contact-status">Click to start chatting</small>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Chat Main Area -->
+    <div class="chat-main">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-header-primary">
+                <div class="chat-header-info" id="chatHeader">
+                    <div class="chat-header-avatar" id="chatAvatar" style="display: none;">
+                        <span id="chatAvatarText"></span>
+                        <span class="chat-header-presence-dot"></span>
+                    </div>
+                    <div class="chat-header-details">
+                        <h3 id="chatUsername">Select a contact to start chatting</h3>
+                        <div class="chat-header-status">
+                            <span id="chatPresenceStatus">Waiting for a secure connection</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="deleteConversationBtn" class="chat-action-btn chat-action-btn-danger" style="display: none;" title="Delete entire conversation">
+                        <i class="bi bi-trash"></i>
+                        <span>Delete</span>
+                    </button>
+                </div>
+            </div>
+            <div class="chat-header-meta">
+                <button id="viewSafetyNumberBtn" class="chat-meta-pill chat-meta-pill-action" style="display: none;" onclick="chatApp.verifySafetyNumber()" title="View and verify safety number">
+                    <span id="verificationStatus" class="verification-status"></span>
+                    <span class="chat-meta-label">Verify safety number</span>
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <div class="chat-meta-pill chat-meta-pill-muted" id="typingIndicator" style="display: none;">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-text">Typing…</span>
+                </div>
+                <div class="chat-meta-pill chat-meta-pill-info">
+                    <i class="bi bi-shield-check"></i>
+                    <span class="chat-meta-label">End-to-end encryption enabled</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="chat-messages" id="messagesContainer">
+            <div id="chatMessages"></div>
+            <div class="welcome-message">
+                <i class="bi bi-chat-dots"></i>
+                <p>Select a contact to view messages</p>
+                <p><small><i class="bi bi-shield-lock"></i> All messages are end-to-end encrypted with ECDH + AES-256 + HMAC</small></p>
+            </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="chat-input">
+            <form id="messageForm" class="chat-input-form">
+                {% csrf_token %}
+                <input type="text" id="messageInput" class="chat-input-field" placeholder="Type a message... (Encrypted)" autocomplete="off" disabled>
+                <button type="submit" id="sendButton" class="chat-send-btn" disabled aria-label="Send message">
+                    <i class="bi bi-send"></i>
+                    <span class="sr-only">Send</span>
+                </button>
+            </form>
+          <!--  <div style="text-align: center; margin-top: var(--space-2);">
+                <small style="color: var(--text-tertiary);">
+                    <i class="bi bi-shield-check"></i> Messages are encrypted with AES-256 before sending
+                </small>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- Store user data -->
+<div id="userData" 
+     data-username="{{ current_user.username }}" 
+     data-public-key="{{ public_key }}"
+     style="display: none;">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/chat.js"></script>
+{% endblock %}

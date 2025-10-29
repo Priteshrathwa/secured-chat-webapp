@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Secure Chat{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block navbar %}
+    <nav class="navbar-modern">
+        <div class="container-fluid">
+            <a class="navbar-brand-modern" href="{% url 'index' %}">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L21 6V12C21 17.5 17.5 21.5 12 23C6.5 21.5 3 17.5 3 12V6L12 2Z" 
+                              fill="url(#gradient1)" stroke="white" stroke-width="1.5"/>
+                        <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2.5" 
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="gradient1" x1="3" y1="2" x2="21" y2="23" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span>Cypherlink</span>
+            </a>
+            <div class="navbar-nav-modern">
+                {% if user.is_authenticated %}
+                    <a class="nav-link-modern" href="{% url 'chat_home' %}">
+                        <i class="bi bi-chat-dots"></i> Messages
+                    </a>
+                    <div class="user-badge-modern">
+                        <div class="user-avatar-modern">{{ user.username|slice:":1"|upper }}</div>
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a class="nav-link-modern btn-logout-modern" href="{% url 'logout' %}" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                {% else %}
+                    <a class="nav-link-modern" href="{% url 'login' %}">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                    <a class="nav-link-modern btn-register-modern" href="{% url 'register' %}">
+                        <i class="bi bi-person-plus" style="background-color: rgb(255, 255, 255) !important;"></i> Sign Up
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/crypto.js"></script>
+    
+    <script>
+        // Clear user-specific localStorage on logout to prevent key reuse across different users
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    // Clear all encryption-related keys from localStorage
+                    const keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        // Remove ECDH keys, session keys, and trusted public keys
+                        if (key && (
+                            key.startsWith('ecdh_') || 
+                            key.startsWith('session_key_') || 
+                            key.startsWith('trusted_pubkey_') ||
+                            key.startsWith('msg_count_') ||
+                            key.startsWith('key_version_') ||
+                            key.startsWith('key_created_')
+                        )) {
+                            keysToRemove.push(key);
+                        }
+                    }
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+                    console.log('🔐 Cleared encryption keys on logout');
+                    // Allow the logout to proceed
+                });
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
